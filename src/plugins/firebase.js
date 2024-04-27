@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app'
-import { getFirestore, collection } from 'firebase/firestore'
+import { getFirestore } from 'firebase/firestore'
 
 export const firebaseApp = initializeApp({
   // your application settings
@@ -12,8 +12,4 @@ export const firebaseApp = initializeApp({
 })
 
 // used for the firestore refs
-const db = getFirestore(firebaseApp)
-
-// here we can export reusable database references
-export const todosRef = collection(db, 'profile')
-console.log('todosRef', todosRef)
+export const db = getFirestore(firebaseApp)
