@@ -1,4 +1,4 @@
-import { db } from './plugins/firebase';
+import { db } from '../plugins/firebase';
 import { Timestamp, doc, getDoc, setDoc } from 'firebase/firestore';
 
 export const createProfile = async ({ username, profileData }) => {
@@ -16,5 +16,18 @@ export const createProfile = async ({ username, profileData }) => {
         console.log('Document written with ID: ', username);
     } catch (e) {
         console.error('Error adding document: ', e);
+    }
+};
+
+export const getProfile = async (username) => {
+    try {
+        const docRef = doc(db, 'profile', username);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+            return docSnap.data();
+        }
+        throw new Error('User not found');
+    } catch (e) {
+        console.error('Error getting profile: ', e);
     }
 };
