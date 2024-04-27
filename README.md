@@ -22,6 +22,12 @@ npm install
 npm run dev
 ```
 
+### Compile and Hot-Reload with Host feature 
+To allow other devices in the same network to view the product.
+```sh
+npm run host
+```
+
 ### Compile and Minify for Production
 
 ```sh
