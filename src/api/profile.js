@@ -1,5 +1,5 @@
 import { db } from '../plugins/firebase';
-import { Timestamp, doc, getDoc, setDoc } from 'firebase/firestore';
+import { Timestamp, collection, doc, getDoc, getDocs, setDoc } from 'firebase/firestore';
 
 export const createProfile = async ({ username, profileData }) => {
     try {
@@ -30,4 +30,19 @@ export const getProfile = async (username) => {
     } catch (e) {
         console.error('Error getting profile: ', e);
     }
+};
+
+// Get all profiles that exist by ID
+export const getAllProfiles = async () => {
+    const profiles = [];
+    try {
+        const profilesSnapshot = await getDocs(collection(db, 'profile'));
+        profilesSnapshot.forEach((doc) => {
+            profiles.push(doc.id);
+        });
+        return profiles;
+    } catch (e) {
+        console.error('Error getting profiles: ', e);
+    }
+    return profiles;
 };
