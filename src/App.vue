@@ -3,37 +3,32 @@ import { RouterLink, RouterView } from 'vue-router';
 </script>
 
 <template>
-    <header>
-        <div class="wrapper">
-            <nav>
-                <RouterLink to="/">Home</RouterLink>
-                <RouterLink to="/profile">Profile</RouterLink>
-            </nav>
-        </div>
-    </header>
-
+    <nav>
+        <RouterLink to="/">Home</RouterLink>
+        <RouterLink to="/profile">Profile</RouterLink>
+    </nav>
     <RouterView />
 </template>
 
 <style scoped>
-header {
-    line-height: 1.5;
-    max-height: 100vh;
-}
-
-.logo {
-    display: block;
-    margin: 0 auto 2rem;
-}
-
 nav {
     width: 100%;
     font-size: 12px;
-    text-align: center;
+    padding: 0.5rem;
+    text-align: right;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+
+    a {
+        color: var(--color-theme-500);
+    }
 }
 
 nav a.router-link-exact-active {
     color: var(--color-text);
+    font-weight: 500;
 }
 
 nav a.router-link-exact-active:hover {
@@ -43,34 +38,9 @@ nav a.router-link-exact-active:hover {
 nav a {
     display: inline-block;
     padding: 0.5rem;
-    border-left: 1px solid var(--color-border);
 }
 
 nav a:first-of-type {
     border: 0;
-}
-
-@media (min-width: 1024px) {
-    header {
-        display: flex;
-        place-items: center;
-        padding-right: calc(var(--section-gap) / 2);
-    }
-
-    .logo {
-        margin: 0 2rem 0 0;
-    }
-
-    header .wrapper {
-        display: flex;
-        place-items: flex-start;
-        flex-wrap: wrap;
-    }
-
-    nav {
-        text-align: left;
-        margin-left: -1rem;
-        font-size: 1rem;
-    }
 }
 </style>
