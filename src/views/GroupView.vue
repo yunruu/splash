@@ -4,9 +4,11 @@
         :key="group.id"
         :name="group.name"
         :description="group.description"
+        :id="group.id"
         :members="group.profiles"
-        class="mb-3"
         @click="onClickViewGroup(group.id)"
+        @update="updateGroup"
+        @delete="handleDeleteGroup"
     />
     <button
         class="bg-rose-800 px-4 py-2 text-white text font-semibold rounded-full fixed bottom-20 right-8"
@@ -16,6 +18,20 @@
     </button>
 
     <GroupFormCard v-if="isCreateModalOpen" @closeModal="closeGroupModal" />
+    <GroupFormCard
+        v-if="updateGroupModal.isOpen"
+        :groupData="updateGroupModal.data"
+        @closeModal="closeGroupModal"
+    />
+    <MessageDialog
+        v-if="message.isOpen"
+        :title="message.title"
+        :message="message.message"
+        :is-cancel="false"
+        :icon="message.icon"
+        :showOverlay="message.showOverlay"
+        @confirm="message.isOpen = false"
+    />
 </template>
 
 <script setup>
@@ -25,20 +41,33 @@ import { useStore } from 'vuex';
 import { getGroups } from '../api/group';
 import GroupCard from '../components/GroupCard.vue';
 import GroupFormCard from '../components/GroupFormCard.vue';
+import MessageDialog from '../components/MessageDialog.vue';
 
 const router = useRouter();
 const store = useStore();
 
 const groupsData = ref([]);
 const isCreateModalOpen = ref(false);
+const updateGroupModal = ref({ isOpen: false, groupId: '', data: {} });
+const message = ref({ title: '', message: '', isOpen: false, showOverlay: false });
 
 const onClickCreateGroup = () => {
     isCreateModalOpen.value = true;
 };
 
-const closeGroupModal = () => {
+const closeGroupModal = (isSuccess, msg) => {
     fetchGroups();
     isCreateModalOpen.value = false;
+    updateGroupModal.value = { isOpen: false, groupId: '', data: {} };
+    if (isSuccess) {
+        message.value = {
+            title: 'Success',
+            message: msg,
+            isOpen: true,
+            icon: '/icons/green-tick.svg',
+            showOverlay: true
+        };
+    }
 };
 
 const fetchGroups = async () => {
@@ -49,8 +78,27 @@ const fetchGroups = async () => {
     }
 };
 
+const updateGroup = (groupId) => {
+    updateGroupModal.value = {
+        isOpen: true,
+        groupId,
+        data: groupsData.value.find((group) => group.id === groupId)
+    };
+};
+
 const onClickViewGroup = (groupId) => {
     router.push(`/group/${groupId}`);
+};
+
+const handleDeleteGroup = () => {
+    fetchGroups();
+    message.value = {
+        title: 'Success',
+        message: 'Group deleted successfully',
+        isOpen: true,
+        icon: '/icons/green-tick.svg',
+        showOverlay: true
+    };
 };
 
 onBeforeMount(() => {

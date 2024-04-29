@@ -1,4 +1,13 @@
-import { Timestamp, collection, addDoc, getDoc, getDocs, doc } from 'firebase/firestore';
+import {
+    Timestamp,
+    collection,
+    addDoc,
+    deleteDoc,
+    getDoc,
+    getDocs,
+    doc,
+    updateDoc
+} from 'firebase/firestore';
 import { db } from '../plugins/firebase';
 
 // Create a new group with a name, description, and list of profiles added to the group
@@ -59,5 +68,27 @@ export const getGroupData = async (groupId) => {
     } catch (e) {
         console.error('Error getting group: ', e);
         return {};
+    }
+};
+
+export const updateGroup = async (groupId, data) => {
+    try {
+        const docRef = doc(db, 'groups', groupId);
+        await updateDoc(docRef, data);
+        return { id: docRef.id };
+    } catch (e) {
+        console.error('Error updating document: ', e);
+        return { error: e };
+    }
+};
+
+export const deleteGroup = async (groupId) => {
+    try {
+        const docRef = doc(db, 'groups', groupId);
+        await deleteDoc(docRef);
+        return { id: docRef.id };
+    } catch (e) {
+        console.error('Error deleting document: ', e);
+        return { error: e };
     }
 };

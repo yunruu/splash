@@ -2,12 +2,12 @@
     <div class="modal-wrapper">
         <div class="modal w-100 bg-white px-4 py-6 rounded">
             <div class="py-2 px-1 border-b w-full flex justify-between items-center">
-                <span class="text-xl font-bold">New group</span>
+                <span class="text-xl font-bold">{{ groupData ? 'Edit group' : 'New group' }}</span>
                 <img
                     src="/icons/close.svg"
                     alt="Close"
                     class="cursor-pointer h-7 hover:bg-gray-100 rounded active:border-2 active:border-rose-600"
-                    @click="closeModal"
+                    @click="closeModal(false, '')"
                 />
             </div>
 
@@ -43,6 +43,7 @@
                                     <OptionCard
                                         :label="member"
                                         :id="member"
+                                        :is-selected-initial="membersInGroup.includes(member)"
                                         @toggle-option="onToggleOption"
                                     />
                                 </li>
@@ -55,9 +56,9 @@
                     <button
                         type="submit"
                         class="bg-rose-800 text-white font-semibold rounded py-2 w-full mt-2"
-                        @click="onClickCreateGroup"
+                        @click="handleClickPrimaryBtn"
                     >
-                        Create group
+                        {{ groupData ? 'Update group' : 'Create group' }}
                     </button>
                 </div>
             </form>
@@ -66,13 +67,15 @@
 </template>
 
 <script setup>
-import { ref, defineEmits, onMounted } from 'vue';
+import { ref, defineEmits, defineProps, onMounted } from 'vue';
 import { getAllProfiles } from '@/api/profile';
-import OptionCard from './OptionCard.vue';
-import { createGroup } from '@/api/group';
+import { createGroup, updateGroup } from '@/api/group';
 import { useStore } from 'vuex';
+import OptionCard from './OptionCard.vue';
 
+const props = defineProps(['groupData']);
 const emit = defineEmits(['closeModal']);
+
 const store = useStore();
 const currUsername = store.state.username.username;
 const members = ref();
@@ -84,10 +87,15 @@ const errMsg = ref('');
 
 onMounted(async () => {
     members.value = (await getAllProfiles()).filter((username) => username !== currUsername);
+    if (props.groupData) {
+        groupName.value = props.groupData.name;
+        groupDescription.value = props.groupData.description;
+        membersInGroup.value = props.groupData.profiles;
+    }
 });
 
-const closeModal = () => {
-    emit('closeModal');
+const closeModal = (isSuccess, message) => {
+    emit('closeModal', isSuccess, message);
 };
 
 const onToggleOption = (id, isSelected) => {
@@ -98,7 +106,7 @@ const onToggleOption = (id, isSelected) => {
     }
 };
 
-const onClickCreateGroup = async (e) => {
+const handleClickPrimaryBtn = async (e) => {
     e.preventDefault();
     if (!groupName.value) {
         isError.value = true;
@@ -117,19 +125,22 @@ const onClickCreateGroup = async (e) => {
         return;
     }
     try {
-        const res = await createGroup({
+        const data = {
             name: groupName.value,
             description: groupDescription.value,
             profiles: membersInGroup.value
-        });
+        };
+        const res = props.groupData
+            ? await updateGroup(props.groupData?.id, data)
+            : await createGroup(data);
         if (res.error) {
-            throw new Error('Failed to create group: ' + res.error);
+            throw new Error('Failed to update group: ' + res.error);
         }
-        closeModal();
+        closeModal(true, `Group ${props.groupData ? 'updated' : 'created'} successfully.`);
     } catch (error) {
         console.error(error);
         isError.value = true;
-        errMsg.value = 'Error creating group. Please try again later.';
+        errMsg.value = 'Error updating group. Please try again later.';
         setTimeout(() => {
             isError.value = false;
         }, 3000);

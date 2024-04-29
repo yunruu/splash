@@ -27,6 +27,10 @@
                 class="mt-4"
                 @open-expense-form-modal="updateExpense"
             />
+            <div v-if="expenses.length === 0" class="text-center mt-12">
+                <img src="/icons/empty.svg" alt="No expenses" class="w-20 h-20 mx-auto mb-6" />
+                <span class="text-slate-400 font-semibold">No expenses created. Add one now!</span>
+            </div>
         </div>
         <button
             class="bg-rose-800 px-4 py-2 text-white text font-semibold rounded-full fixed bottom-20 right-8 active:border-2 active:border-rose-400 hover:cursor-pointer hover:bg-rose-900"
