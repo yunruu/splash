@@ -70,17 +70,20 @@ import { ref, defineEmits, onMounted } from 'vue';
 import { getAllProfiles } from '@/api/profile';
 import OptionCard from './OptionCard.vue';
 import { createGroup } from '@/api/group';
+import { useStore } from 'vuex';
 
 const emit = defineEmits(['closeModal']);
+const store = useStore();
+const currUsername = store.state.username.username;
 const members = ref();
 const groupName = ref('');
 const groupDescription = ref('');
-const membersInGroup = ref([]);
+const membersInGroup = ref([currUsername]);
 const isError = ref(false);
 const errMsg = ref('');
 
 onMounted(async () => {
-    members.value = await getAllProfiles();
+    members.value = (await getAllProfiles()).filter((username) => username !== currUsername);
 });
 
 const closeModal = () => {
