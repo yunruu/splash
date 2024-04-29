@@ -20,16 +20,16 @@
     --vt-c-text-dark-1: var(--vt-c-white);
     --vt-c-text-dark-2: rgba(235, 235, 235, 0.64);
 
-    --color-theme-100: #ffedd5;
-    --color-theme-200: #fed7aa;
-    --color-theme-300: #fcd34d;
-    --color-theme-400: #fbbf24;
-    --color-theme-500: #f59e0b;
-    --color-theme-600: #d97706;
-    --color-theme-700: #b45309;
-    --color-theme-800: #92400e;
-    --color-theme-900: #78350f;
-    --color-theme-1000: #451a03;
+    --color-theme-100: #ffe4e6;
+    --color-theme-200: #fecdd3;
+    --color-theme-300: #fda4af;
+    --color-theme-400: #fb7185;
+    --color-theme-500: #f43f5e;
+    --color-theme-600: #e11d48;
+    --color-theme-700: #be123c;
+    --color-theme-800: #9f1239;
+    --color-theme-900: #881337;
+    --color-theme-1000: #4c0519;
     --color-theme: var(--color-theme-600);
 }
 
