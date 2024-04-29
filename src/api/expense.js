@@ -2,11 +2,13 @@ import {
     Timestamp,
     collection,
     addDoc,
+    deleteDoc,
     getDoc,
     getDocs,
     doc,
     query,
     orderBy,
+    updateDoc,
     where
 } from 'firebase/firestore';
 import { db } from '../plugins/firebase';
@@ -65,6 +67,28 @@ export const getAllExpensesOfGroup = async (groupId) => {
         return { data: expenses };
     } catch (e) {
         console.error('Error getting documents: ', e);
+        return { error: e };
+    }
+};
+
+export const updateExpense = async (id, data) => {
+    console.log('id: ', id);
+    try {
+        const ref = doc(db, 'expenses', id);
+        await updateDoc(ref, data);
+        return { data: { id } };
+    } catch (e) {
+        console.error('Error updating document: ', e);
+        return { error: e };
+    }
+};
+
+export const deleteExpense = async (id) => {
+    try {
+        await deleteDoc(doc(db, 'expenses', id));
+        return { data: { id } };
+    } catch (e) {
+        console.error('Error deleting document: ', e);
         return { error: e };
     }
 };
