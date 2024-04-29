@@ -19,13 +19,15 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, onBeforeMount } from 'vue';
 import { useRouter } from 'vue-router';
+import { useStore } from 'vuex';
 import { getGroups } from '../api/group';
 import GroupCard from '../components/GroupCard.vue';
 import GroupFormCard from '../components/GroupFormCard.vue';
 
 const router = useRouter();
+const store = useStore();
 
 const groupsData = ref([]);
 const isCreateModalOpen = ref(false);
@@ -50,6 +52,12 @@ const fetchGroups = async () => {
 const onClickViewGroup = (groupId) => {
     router.push(`/group/${groupId}`);
 };
+
+onBeforeMount(() => {
+    if (!store.state.username) {
+        router.push('/profile');
+    }
+});
 
 onMounted(async () => {
     await fetchGroups();
