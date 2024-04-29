@@ -2,7 +2,7 @@ import { db } from '../plugins/firebase';
 import { Timestamp, collection, doc, getDoc, getDocs, setDoc } from 'firebase/firestore';
 import { getGroupData } from './group';
 
-export const createProfile = async ({ username, profileData }) => {
+export const createProfile = async (username, profileData) => {
     try {
         const docRef = doc(db, 'profile', username);
         const docSnap = await getDoc(docRef);
@@ -14,9 +14,25 @@ export const createProfile = async ({ username, profileData }) => {
             timestamp: Timestamp.fromDate(new Date())
         };
         await setDoc(docRef, profileData);
-        console.log('Document written with ID: ', username);
+        return { data: { username } };
     } catch (e) {
-        console.error('Error adding document: ', e);
+        return { error: e };
+    }
+};
+
+export const loginProfile = async (username, password) => {
+    try {
+        const docRef = doc(db, 'profile', username);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+            const profileData = docSnap.data();
+            if (profileData.password === password) {
+                return { data: { username } };
+            }
+        }
+        throw new Error('Invalid username or password');
+    } catch (e) {
+        return { error: e };
     }
 };
 
@@ -57,7 +73,6 @@ export const getMembers = async (groupId) => {
             throw new Error('Group not found');
         }
         const members = res.data.profiles;
-        console.log('Members: ', members);
         return members;
     } catch (e) {
         console.error('Error getting members: ', e);
