@@ -25,25 +25,23 @@ export const createGroup = async ({ name, description, profiles }) => {
 };
 
 // Get all groups that a user is a part of by ID
-export const getGroups = async (username) => {
+export const getGroups = async (username, isOnlyIncludeId) => {
     const groups = [];
     try {
-        const docRef = doc(db, 'group');
         const groupsSnapshot = await getDocs(collection(db, 'group'));
         groupsSnapshot.forEach((doc) => {
-            // Add the group to the user's list of groups
-            if (doc.data().profiles.includes(username)) {
-                groups.push(doc.id);
-            }
+            doc.data().profiles.forEach((profile) => {
+                if (profile.id === username) {
+                    if (isOnlyIncludeId) {
+                        groups.push(doc.id);
+                    } else {
+                        groups.push(doc.data());
+                    }
+                }
+            });
         });
-
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-            return docSnap.data();
-        }
-        throw new Error('User not found');
     } catch (e) {
-        console.error('Error getting profile: ', e);
+        console.error('Error getting groups: ', e);
     }
     return groups;
 };
