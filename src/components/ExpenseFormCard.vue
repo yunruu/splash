@@ -116,6 +116,7 @@
             v-if="isMessageDialog"
             title="Delete expense"
             message="Are you sure you want to delete this expense?"
+            :is-cancel="true"
             @cancel="isMessageDialog = false"
             @confirm="onDeleteExpense"
         />
