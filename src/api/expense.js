@@ -72,7 +72,6 @@ export const getAllExpensesOfGroup = async (groupId) => {
 };
 
 export const updateExpense = async (id, data) => {
-    console.log('id: ', id);
     try {
         const ref = doc(db, 'expenses', id);
         await updateDoc(ref, data);

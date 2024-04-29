@@ -68,7 +68,6 @@ onMounted(async () => {
     } catch (error) {
         console.error(error);
     }
-    console.log(expenses);
 });
 
 const routeToGroups = () => {
