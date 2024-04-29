@@ -1,5 +1,6 @@
 import { db } from '../plugins/firebase';
 import { Timestamp, collection, doc, getDoc, getDocs, setDoc } from 'firebase/firestore';
+import { getGroupData } from './group';
 
 export const createProfile = async ({ username, profileData }) => {
     try {
@@ -45,4 +46,21 @@ export const getAllProfiles = async () => {
         console.error('Error getting profiles: ', e);
     }
     return profiles;
+};
+
+// Get all members in a group
+export const getMembers = async (groupId) => {
+    const members = [];
+    try {
+        const res = await getGroupData(groupId);
+        if (!res.data) {
+            throw new Error('Group not found');
+        }
+        const members = res.data.profiles;
+        console.log('Members: ', members);
+        return members;
+    } catch (e) {
+        console.error('Error getting members: ', e);
+    }
+    return members;
 };
