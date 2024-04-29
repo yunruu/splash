@@ -43,7 +43,7 @@ const closeGroupModal = () => {
 
 const fetchGroups = async () => {
     try {
-        groupsData.value = await getGroups('admin', false);
+        groupsData.value = await getGroups(store.state.username.username, false);
     } catch (error) {
         console.error(error);
     }

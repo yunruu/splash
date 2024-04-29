@@ -25,14 +25,17 @@ onMounted(async () => {
         isLoginModalOpen.value = true;
     } else {
         profileData.value = await populateData(user.username);
-        console.log(profileData.value);
     }
 });
 
 const onLogin = async (username) => {
-    console.log(username);
     profileData.value = await populateData(username);
     isLoginModalOpen.value = false;
+};
+
+const logout = () => {
+    store.commit('login', null);
+    isLoginModalOpen.value = true;
 };
 </script>
 
@@ -65,6 +68,12 @@ const onLogin = async (username) => {
                     disabled
                 />
             </div>
+            <button
+                class="bg-rose-800 px-4 py-2 mt-5 text-white text font-semibold rounded-full"
+                @click="logout"
+            >
+                Logout
+            </button>
         </form>
     </div>
 </template>
