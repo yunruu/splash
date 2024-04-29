@@ -8,7 +8,7 @@ const routes = [
         icon: '/icons/home.svg'
     },
     {
-        path: '/group',
+        path: '/groups',
         label: 'Groups',
         icon: '/icons/group.svg'
     },
@@ -46,6 +46,7 @@ const routes = [
 <style scoped>
 nav {
     width: 100%;
+    height: var(--nav-height);
     font-size: 12px;
     padding: 0.5rem;
     text-align: center;
@@ -55,6 +56,8 @@ nav {
     right: 0;
     display: flex;
     justify-content: space-around;
+    z-index: 150;
+    background-color: white;
 
     a {
         color: var(--vt-c-text-light-2);

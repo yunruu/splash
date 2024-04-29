@@ -46,6 +46,8 @@
     --color-text: var(--vt-c-text-light-1);
 
     --section-gap: 160px;
+
+    --nav-height: 4.5rem;
 }
 
 @media (prefers-color-scheme: dark) {
