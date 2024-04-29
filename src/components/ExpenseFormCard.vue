@@ -2,10 +2,21 @@
     <div class="modal-wrapper">
         <div class="modal w-100 bg-white px-4 py-6 rounded">
             <div class="py-2 px-1 border-b w-full flex justify-between items-center">
-                <span class="text-xl font-bold">New expense</span>
+                <div class="flex items-center gap-3">
+                    <span class="text-xl font-bold capitalize">{{
+                        props.isUpdate ? props.expense?.name : 'New expense'
+                    }}</span>
+                    <img
+                        v-if="props.isUpdate"
+                        src="/icons/delete.svg"
+                        alt="Delete expense icon"
+                        class="h-7 w-7 p-1 hover:cursor-pointer hover:bg-slate-100 rounded active:border-2 active:border-rose-600 active:bg-transparent"
+                        @click="onClickDeleteExpense"
+                    />
+                </div>
                 <img
                     src="/icons/close.svg"
-                    alt="Close"
+                    alt="Close expense form icon"
                     class="cursor-pointer h-7 hover:bg-gray-100 rounded active:border-2 active:border-rose-600"
                     @click="closeModal"
                 />
@@ -80,6 +91,7 @@
                                     <OptionCard
                                         :label="member"
                                         :id="member"
+                                        :is-selected-initial="splitBy.includes(member)"
                                         @toggle-option="onToggleOption"
                                     />
                                 </li>
@@ -92,24 +104,33 @@
                     <button
                         type="submit"
                         class="bg-rose-800 text-white font-semibold rounded py-2 w-full mt-2"
-                        @click="onClickCreateExpense"
+                        @click="createOrUpdateExpense"
                     >
-                        Create expense
+                        {{ props.isUpdate ? 'Update expense' : 'Create expense' }}
                     </button>
                 </div>
             </form>
         </div>
+
+        <MessageDialog
+            v-if="isMessageDialog"
+            title="Delete expense"
+            message="Are you sure you want to delete this expense?"
+            @cancel="isMessageDialog = false"
+            @confirm="onDeleteExpense"
+        />
     </div>
 </template>
 
 <script setup>
 import { ref, defineEmits, defineProps, onMounted } from 'vue';
 import { getMembers } from '@/api/profile';
-import OptionCard from './OptionCard.vue';
-import { createExpense } from '@/api/expense';
+import { createExpense, deleteExpense, updateExpense } from '@/api/expense';
 import { currencies } from '@/utils/currency';
+import OptionCard from './OptionCard.vue';
+import MessageDialog from './MessageDialog.vue';
 
-const props = defineProps(['groupId']);
+const props = defineProps(['groupId', 'isUpdate', 'expense']);
 const emit = defineEmits(['closeModal']);
 
 const members = ref();
@@ -121,14 +142,26 @@ const paidBy = ref('');
 const splitBy = ref([]);
 const isError = ref(false);
 const errMsg = ref('');
+const isMessageDialog = ref(false);
 
 const currencyOptions = ref(currencies);
 
 onMounted(async () => {
     members.value = await getMembers(props.groupId);
+    if (props.isUpdate) {
+        expenseName.value = props.expense.name;
+        expenseDescription.value = props.expense.description;
+        amount.value = props.expense.amount;
+        currency.value = props.expense.currency;
+        paidBy.value = props.expense.paidBy;
+        splitBy.value = props.expense.splitBy;
+    }
 });
 
 const closeModal = () => {
+    isMessageDialog.value = false;
+    isError.value = false;
+    errMsg.value = '';
     emit('closeModal');
 };
 
@@ -140,7 +173,7 @@ const onToggleOption = (id, isSelected) => {
     }
 };
 
-const onClickCreateExpense = async (e) => {
+const createOrUpdateExpense = async (e) => {
     e.preventDefault();
     if (!expenseName.value) {
         isError.value = true;
@@ -175,7 +208,7 @@ const onClickCreateExpense = async (e) => {
         return;
     }
     try {
-        const res = await createExpense({
+        const data = {
             name: expenseName.value,
             description: expenseDescription.value,
             amount: amount.value,
@@ -183,15 +216,39 @@ const onClickCreateExpense = async (e) => {
             groupId: props.groupId,
             paidBy: paidBy.value,
             splitBy: splitBy.value
-        });
+        };
+        const res = await (props.isUpdate
+            ? updateExpense(props.expense.id, data)
+            : createExpense(data));
         if (res.error) {
-            throw new Error('Failed to create group: ' + res.error);
+            throw new Error('Failed to update expense: ' + res.error);
         }
         closeModal();
     } catch (error) {
         console.error(error);
         isError.value = true;
-        errMsg.value = 'Error creating group. Please try again later.';
+        errMsg.value = 'Error creating expense. Please try again later.';
+        setTimeout(() => {
+            isError.value = false;
+        }, 3000);
+    }
+};
+
+const onClickDeleteExpense = () => {
+    isMessageDialog.value = true;
+};
+
+const onDeleteExpense = async () => {
+    try {
+        const res = await deleteExpense(props.expense.id);
+        if (res.error) {
+            throw new Error('Failed to delete expense: ' + res.error);
+        }
+        closeModal();
+    } catch (error) {
+        console.error(error);
+        isError.value = true;
+        errMsg.value = 'Error deleting expense. Please try again later.';
         setTimeout(() => {
             isError.value = false;
         }, 3000);

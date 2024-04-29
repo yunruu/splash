@@ -25,17 +25,20 @@
                 :amount="expense.amount"
                 :expense="expense"
                 class="mt-4"
+                @open-expense-form-modal="updateExpense"
             />
         </div>
         <button
             class="bg-rose-800 px-4 py-2 text-white text font-semibold rounded-full fixed bottom-20 right-8 active:border-2 active:border-rose-400 hover:cursor-pointer hover:bg-rose-900"
-            @click="openExpenseModal"
+            @click="openExpenseModal(false)"
         >
             + New expense
         </button>
         <ExpenseFormCard
             v-if="isExpenseModalOpen"
             :group-id="groupId"
+            :is-update="isUpdateExpense"
+            :expense="expenseToUpdate"
             @close-modal="closeExpenseModal"
         />
     </div>
@@ -54,6 +57,8 @@ const router = useRouter();
 const groupId = route.params.id;
 const groupData = ref({});
 const isExpenseModalOpen = ref(false);
+const isUpdateExpense = ref(false);
+const expenseToUpdate = ref({});
 const expenses = ref([]);
 
 onMounted(async () => {
@@ -70,7 +75,8 @@ const routeToGroups = () => {
     router.push('/groups');
 };
 
-const openExpenseModal = () => {
+const openExpenseModal = (isUpdate) => {
+    isUpdateExpense.value = isUpdate;
     isExpenseModalOpen.value = true;
 };
 
@@ -90,6 +96,11 @@ const fetchExpenses = async () => {
         console.error(error);
         return { error: error.message };
     }
+};
+
+const updateExpense = (expense) => {
+    expenseToUpdate.value = expense;
+    openExpenseModal(true);
 };
 </script>
 

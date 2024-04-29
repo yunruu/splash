@@ -12,9 +12,9 @@
 <script setup>
 import { defineProps, defineEmits, ref } from 'vue';
 
-const props = defineProps(['label', 'id']);
+const props = defineProps(['label', 'id', 'isSelectedInitial']);
 const emit = defineEmits(['toggleOption']);
-const isSelected = ref(false);
+const isSelected = ref(props.isSelectedInitial);
 
 const toggleOption = () => {
     isSelected.value = !isSelected.value;
