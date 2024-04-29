@@ -36,7 +36,7 @@ export const getGroups = async (username, isOnlyIncludeId) => {
                     if (isOnlyIncludeId) {
                         groups.push(doc.id);
                     } else {
-                        groups.push(doc.data());
+                        groups.push({ id: doc.id, ...doc.data() });
                     }
                 }
             });
@@ -53,7 +53,7 @@ export const getGroupData = async (groupId) => {
         const docRef = doc(db, 'groups', groupId);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
-            return docSnap.data();
+            return { data: docSnap.data() };
         }
         throw new Error('Group not found');
     } catch (e) {
