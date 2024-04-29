@@ -23,9 +23,19 @@ const router = createRouter({
             component: () => import('../views/ProfileView.vue')
         },
         {
-            path: '/group',
-            name: 'group',
+            path: '/groups',
+            name: 'groups',
             component: () => import('../views/GroupView.vue')
+        },
+        {
+            path: '/group/:id',
+            name: 'group',
+            component: () => import('../views/GroupDetailView.vue')
+        },
+        {
+            path: '/:catchAll(.*)',
+            name: 'not-found',
+            component: () => import('../views/404NotFound.vue')
         }
     ]
 });
