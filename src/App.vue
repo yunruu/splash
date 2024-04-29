@@ -1,11 +1,44 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router';
+
+const routes = [
+    {
+        path: '/',
+        label: 'Home',
+        icon: '/icons/home.svg'
+    },
+    {
+        path: '/group',
+        label: 'Groups',
+        icon: '/icons/group.svg'
+    },
+    {
+        path: '/profile',
+        label: 'Profile',
+        icon: '/icons/profile.svg'
+    }
+];
 </script>
 
 <template>
     <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/profile">Profile</RouterLink>
+        <RouterLink
+            v-for="route in routes"
+            :key="route.path"
+            :to="route.path"
+            class="router-wrapper"
+        >
+            <div class="flex flex-col items-center">
+                <img
+                    :src="route.icon"
+                    :alt="route.label + ' icon'"
+                    width="24"
+                    height="24"
+                    style="height: 24px"
+                />
+                {{ route.label }}
+            </div>
+        </RouterLink>
     </nav>
     <RouterView />
 </template>
@@ -15,20 +48,26 @@ nav {
     width: 100%;
     font-size: 12px;
     padding: 0.5rem;
-    text-align: right;
+    text-align: center;
     position: fixed;
-    top: 0;
+    bottom: 0;
     left: 0;
     right: 0;
+    display: flex;
+    justify-content: space-around;
 
     a {
-        color: var(--color-theme-500);
+        color: var(--vt-c-text-light-2);
     }
 }
 
 nav a.router-link-exact-active {
     color: var(--color-text);
     font-weight: 500;
+
+    img {
+        filter: invert(1);
+    }
 }
 
 nav a.router-link-exact-active:hover {
@@ -42,5 +81,9 @@ nav a {
 
 nav a:first-of-type {
     border: 0;
+}
+
+.router-wrapper {
+    width: 100%;
 }
 </style>
