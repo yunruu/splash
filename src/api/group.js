@@ -17,10 +17,11 @@ export const createGroup = async ({ name, description, profiles }) => {
             profiles: validProfiles,
             timestamp: Timestamp.fromDate(new Date())
         };
-        const docRef = await addDoc(collection(db, 'users'), groupData);
-        console.log('Document written with ID: ', docRef.id);
+        const docRef = await addDoc(collection(db, 'groups'), groupData);
+        return { id: docRef.id };
     } catch (e) {
         console.error('Error adding document: ', e);
+        return { error: e };
     }
 };
 
@@ -28,10 +29,10 @@ export const createGroup = async ({ name, description, profiles }) => {
 export const getGroups = async (username, isOnlyIncludeId) => {
     const groups = [];
     try {
-        const groupsSnapshot = await getDocs(collection(db, 'group'));
+        const groupsSnapshot = await getDocs(collection(db, 'groups'));
         groupsSnapshot.forEach((doc) => {
             doc.data().profiles.forEach((profile) => {
-                if (profile.id === username) {
+                if (profile === username) {
                     if (isOnlyIncludeId) {
                         groups.push(doc.id);
                     } else {
@@ -49,7 +50,7 @@ export const getGroups = async (username, isOnlyIncludeId) => {
 // Retrieve group data by ID
 export const getGroupData = async (groupId) => {
     try {
-        const docRef = doc(db, 'group', groupId);
+        const docRef = doc(db, 'groups', groupId);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
             return docSnap.data();
