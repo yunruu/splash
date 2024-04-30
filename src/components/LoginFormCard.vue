@@ -1,5 +1,5 @@
 <script setup>
-import { defineEmits, ref } from 'vue';
+import { defineEmits, ref, computed } from 'vue';
 import { useStore } from 'vuex';
 import { createProfile, loginProfile } from '@/api/profile';
 import MessageDialog from './MessageDialog.vue';
@@ -12,6 +12,7 @@ const username = ref('');
 const password = ref('');
 const email = ref('');
 const isRegister = ref(false);
+const isPasswordVisible = ref(false);
 const message = ref({ title: '', message: '', isOpen: false });
 
 const login = async (e) => {
@@ -94,6 +95,15 @@ const handleClickSecondaryBtn = (e) => {
         goToRegister(e);
     }
 };
+
+const passwordFieldType = computed(() => {
+    return isPasswordVisible.value ? 'text' : 'password';
+});
+
+const handleClickViewPasswordBtn = (e) => {
+    e.preventDefault();
+    isPasswordVisible.value = !isPasswordVisible.value;
+}
 </script>
 
 <template>
@@ -125,13 +135,20 @@ const handleClickSecondaryBtn = (e) => {
                 </div>
                 <div class="flex flex-col gap-2">
                     <label for="password" class="text-xs font-semibold">Password</label>
-                    <input
-                        v-model="password"
-                        type="password"
-                        id="password"
-                        name="password"
-                        class="border rounded-lg px-3 py-2"
-                    />
+                    <div class="flex items-center border rounded-lg">
+                        <input
+                            v-model="password"
+                            :type="passwordFieldType"
+                            id="password"
+                            name="password"
+                            class="flex-grow border-0 px-3 py-2 rounded-l-lg"
+                        />
+                        <button 
+                            class="px-2 bg-transparent text-xs leading-none" 
+                            @click="handleClickViewPasswordBtn">
+                            {{ isPasswordVisible ? 'Hide' : 'View' }}
+                        </button>
+                    </div>
                 </div>
                 <button
                     class="bg-rose-800 text-white mt-8 px-4 py-2 rounded hover:bg-rose-900"
