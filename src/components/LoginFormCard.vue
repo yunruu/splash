@@ -1,3 +1,102 @@
+<script setup>
+import { defineEmits, ref } from 'vue';
+import { useStore } from 'vuex';
+import { createProfile, loginProfile } from '@/api/profile';
+import MessageDialog from './MessageDialog.vue';
+
+const emit = defineEmits(['loggedIn']);
+const store = useStore();
+
+const username = ref('');
+const password = ref('');
+const email = ref('');
+const isRegister = ref(false);
+const message = ref({ title: '', message: '', isOpen: false });
+
+const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+
+const login = async (e) => {
+    e.preventDefault();
+    message.value.isOpen = false;
+
+    const res = await loginProfile(username.value, password.value);
+    if (!res.data) {
+        message.value = { title: 'Error!', message: res.error, isOpen: true };
+        return;
+    }
+    store.commit('login', { username: username.value });
+    emit('loggedIn', username.value);
+};
+
+const register = async (e) => {
+    e.preventDefault();
+    message.value.isOpen = false;
+
+    if (!username.value || !password.value || !email.value) {
+        message.value = { title: 'Error!', message: 'Please fill all the fields.', isOpen: true };
+        return;
+    }
+
+    if (password.value.length < 6) {
+        message.value = {
+            title: 'Error!',
+            message: 'Password must be at least 6 characters.',
+            isOpen: true
+        };
+        return;
+    }
+
+    if (!emailRegex.test(email.value)) {
+        message.value = { title: 'Error!', message: 'Invalid email address.', isOpen: true };
+        return;
+    }
+
+    const data = {
+        username: username.value,
+        password: password.value,
+        email: email.value
+    };
+
+    try {
+        const res = await createProfile(username.value, data);
+        if (!res.data) {
+            throw new Error('Failed to create profile, please try again later. ', res.error);
+        }
+        backToLogin();
+    } catch (error) {
+        message.value = { title: 'Error!', message: error.message, isOpen: true };
+    }
+};
+
+const goToRegister = () => {
+    isRegister.value = true;
+    username.value = '';
+    password.value = '';
+};
+
+const backToLogin = () => {
+    isRegister.value = false;
+};
+
+const handleClickPrimaryBtn = (e) => {
+    e.preventDefault();
+    if (isRegister.value) {
+        register(e);
+    } else {
+        login(e);
+    }
+};
+
+const handleClickSecondaryBtn = (e) => {
+    e.preventDefault();
+    if (isRegister.value) {
+        backToLogin(e);
+    } else {
+        goToRegister(e);
+    }
+};
+</script>
+
 <template>
     <div class="modal-wrapper">
         <div class="modal w-100 bg-white p-6 rounded">
@@ -60,103 +159,6 @@
         @confirm="message.isOpen = false"
     />
 </template>
-
-<script setup>
-import { defineEmits, ref } from 'vue';
-import { useStore } from 'vuex';
-import { createProfile, loginProfile } from '@/api/profile';
-import MessageDialog from './MessageDialog.vue';
-
-const emit = defineEmits(['loggedIn']);
-const store = useStore();
-
-const username = ref('');
-const password = ref('');
-const email = ref('');
-const isRegister = ref(false);
-const message = ref({ title: '', message: '', isOpen: false });
-
-const login = async (e) => {
-    e.preventDefault();
-    message.value.isOpen = false;
-
-    const res = await loginProfile(username.value, password.value);
-    if (!res.data) {
-        message.value = { title: 'Error!', message: res.error, isOpen: true };
-        return;
-    }
-    store.commit('login', { username: username.value });
-    emit('loggedIn', username.value);
-};
-
-const register = async (e) => {
-    e.preventDefault();
-    message.value.isOpen = false;
-
-    if (!username.value || !password.value || !email.value) {
-        message.value = { title: 'Error!', message: 'Please fill all the fields.', isOpen: true };
-        return;
-    }
-
-    if (password.value.length < 6) {
-        message.value = {
-            title: 'Error!',
-            message: 'Password must be at least 6 characters.',
-            isOpen: true
-        };
-        return;
-    }
-
-    if (!email.value.includes('@') || !email.value.includes('.')) {
-        message.value = { title: 'Error!', message: 'Invalid email address.', isOpen: true };
-        return;
-    }
-
-    const data = {
-        username: username.value,
-        password: password.value,
-        email: email.value
-    };
-
-    try {
-        const res = await createProfile(username.value, data);
-        if (!res.data) {
-            throw new Error('Failed to create profile, please try again later. ', res.error);
-        }
-        backToLogin();
-    } catch (error) {
-        message.value = { title: 'Error!', message: error.message, isOpen: true };
-    }
-};
-
-const goToRegister = () => {
-    isRegister.value = true;
-    username.value = '';
-    password.value = '';
-};
-
-const backToLogin = () => {
-    isRegister.value = false;
-};
-
-const handleClickPrimaryBtn = (e) => {
-    e.preventDefault();
-    if (isRegister.value) {
-        register(e);
-    } else {
-        login(e);
-    }
-};
-
-const handleClickSecondaryBtn = (e) => {
-    e.preventDefault();
-    if (isRegister.value) {
-        backToLogin(e);
-    } else {
-        goToRegister(e);
-    }
-};
-</script>
 
 <style scoped>
 .modal-wrapper {
