@@ -3,6 +3,7 @@ import { defineEmits, ref } from 'vue';
 import { useStore } from 'vuex';
 import { createProfile, loginProfile } from '@/api/profile';
 import MessageDialog from './MessageDialog.vue';
+import { testEmail } from '@/utils/regex';
 
 const emit = defineEmits(['loggedIn']);
 const store = useStore();
@@ -12,8 +13,6 @@ const password = ref('');
 const email = ref('');
 const isRegister = ref(false);
 const message = ref({ title: '', message: '', isOpen: false });
-
-const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
 
 const login = async (e) => {
     e.preventDefault();
@@ -46,7 +45,7 @@ const register = async (e) => {
         return;
     }
 
-    if (!emailRegex.test(email.value)) {
+    if (!testEmail(email.value)) {
         message.value = { title: 'Error!', message: 'Invalid email address.', isOpen: true };
         return;
     }
