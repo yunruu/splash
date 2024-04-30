@@ -1,4 +1,4 @@
-import bcrypt from 'bcryptjs';
+import bcrypt from 'bcrypt';
 
 const saltRounds = 10; // Cost factor (how much time needed to hash)
 
