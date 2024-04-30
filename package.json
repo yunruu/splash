@@ -12,6 +12,7 @@
     "host": "vite --host"
   },
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "firebase": "^10.11.1",
     "moment": "^2.30.1",
     "vue": "^3.4.21",

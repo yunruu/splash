@@ -1,18 +1,49 @@
 import { db } from '../plugins/firebase';
 import { Timestamp, collection, doc, getDoc, getDocs, setDoc } from 'firebase/firestore';
 import { getGroupData } from './group';
+import { bcrypt } from 'bcrypt'
+
+const saltRounds = 10 // Cost factor (how much time needed to hash)
+
+const hashPassword = async (password) => {
+    try {
+        const salt = await bcrypt.genSalt(saltRounds);
+        const hash = await bcrypt.hash(password, salt);
+        return hash;
+    } catch (e) {
+        console.error("Error hashing password: ", e);
+        return { error: e };
+    }
+};
+
+const checkPassword = async (password, expectedHash) => {
+    try {
+        const isMatch = await bcrypt.compare(password, expectedHash);
+        return isMatch;
+    } catch (e) {
+        console.error("Authentication Failed");
+        return {error: e};
+    }
+}
+
 
 export const createProfile = async (username, profileData) => {
     try {
         const docRef = doc(db, 'profile', username);
         const docSnap = await getDoc(docRef);
+        // Check for existing username
         if (docSnap.exists()) {
             throw new Error('Username already exists');
         }
+
+        profileData.password = await hashPassword(profileData.password);
+
+        // Append Regisration Time
         profileData = {
             ...profileData,
             timestamp: Timestamp.fromDate(new Date())
         };
+        // Push new user data
         await setDoc(docRef, profileData);
         return { data: { username } };
     } catch (e) {
@@ -24,9 +55,11 @@ export const loginProfile = async (username, password) => {
     try {
         const docRef = doc(db, 'profile', username);
         const docSnap = await getDoc(docRef);
+        // Check for user
         if (docSnap.exists()) {
             const profileData = docSnap.data();
-            if (profileData.password === password) {
+
+            if (checkPassword(password, profileData.password)) {
                 return { data: { username } };
             }
         }
