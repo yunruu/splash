@@ -1,7 +1,7 @@
 import { db } from '../plugins/firebase';
 import { Timestamp, collection, doc, getDoc, getDocs, setDoc } from 'firebase/firestore';
 import { getGroupData } from './group';
-import { bcrypt } from 'bcrypt'
+import bcrypt from 'bcryptjs'
 
 const saltRounds = 10 // Cost factor (how much time needed to hash)
 
@@ -11,7 +11,6 @@ const hashPassword = async (password) => {
         const hash = await bcrypt.hash(password, salt);
         return hash;
     } catch (e) {
-        console.error("Error hashing password: ", e);
         return { error: e };
     }
 };
@@ -21,8 +20,7 @@ const checkPassword = async (password, expectedHash) => {
         const isMatch = await bcrypt.compare(password, expectedHash);
         return isMatch;
     } catch (e) {
-        console.error("Authentication Failed");
-        return {error: e};
+        return false;
     }
 }
 
@@ -37,6 +35,9 @@ export const createProfile = async (username, profileData) => {
         }
 
         profileData.password = await hashPassword(profileData.password);
+        if (profileData.password.error) {
+            throw profileData.password.error;
+        }
 
         // Append Regisration Time
         profileData = {
@@ -59,7 +60,7 @@ export const loginProfile = async (username, password) => {
         if (docSnap.exists()) {
             const profileData = docSnap.data();
 
-            if (checkPassword(password, profileData.password)) {
+            if (await checkPassword(password, profileData.password)) {
                 return { data: { username } };
             }
         }
