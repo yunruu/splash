@@ -1,6 +1,8 @@
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 
 const saltRounds = 10; // Cost factor (how much time needed to hash)
+
+const const const semmes 
 
 export const hashPassword = async (password) => {
     try {
