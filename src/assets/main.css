@@ -3,7 +3,6 @@
 #app {
     padding: 1.5rem;
     margin-bottom: 52px;
-    min-height: calc(100vh - 52px);
     min-width: 100vw;
 }
 
