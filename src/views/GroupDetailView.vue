@@ -52,7 +52,7 @@
 import { ref, onMounted } from 'vue';
 import { getGroupData } from '../api/group';
 import { useRoute, useRouter } from 'vue-router';
-import { getAllExpensesOfGroup } from '@/api/expense';
+import { getAllExpensesOfGroup, settleUp } from '@/api/expense';
 import ExpenseFormCard from '../components/ExpenseFormCard.vue';
 import ExpenseCard from '../components/ExpenseCard.vue';
 
