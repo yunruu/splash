@@ -1,5 +1,5 @@
 import { db } from '../plugins/firebase';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { doc, deleteDoc, getDoc, setDoc } from 'firebase/firestore';
 import { hashPassword } from '@/utils/encrypt';
 
 export const resetPassword = async (username, password) => {
@@ -16,6 +16,16 @@ export const resetPassword = async (username, password) => {
             return { data: { username } };
         }
         throw new Error('User not found');
+    } catch (e) {
+        return { error: e };
+    }
+};
+
+export const deleteAccount = async (username) => {
+    try {
+        const docRef = doc(db, 'profile', username);
+        await deleteDoc(docRef);
+        return { data: { username } };
     } catch (e) {
         return { error: e };
     }
