@@ -1,7 +1,7 @@
 import { db } from '../plugins/firebase';
 import { Timestamp, collection, doc, getDoc, getDocs, setDoc } from 'firebase/firestore';
 import { getGroupData } from './group';
-import { hashPassword, isPasswordMatch } from '@/utils/encrypt';
+import { hashPassword } from '@/utils/encrypt';
 
 export const createProfile = async (username, profileData) => {
     try {
@@ -25,24 +25,6 @@ export const createProfile = async (username, profileData) => {
         // Push new user data
         await setDoc(docRef, profileData);
         return { data: { username } };
-    } catch (e) {
-        return { error: e };
-    }
-};
-
-export const loginProfile = async (username, password) => {
-    try {
-        const docRef = doc(db, 'profile', username);
-        const docSnap = await getDoc(docRef);
-        // Check for user
-        if (docSnap.exists()) {
-            const profileData = docSnap.data();
-
-            if (await isPasswordMatch(password, profileData.password)) {
-                return { data: { username } };
-            }
-        }
-        throw new Error('Invalid username or password');
     } catch (e) {
         return { error: e };
     }
