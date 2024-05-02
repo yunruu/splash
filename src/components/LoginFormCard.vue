@@ -1,5 +1,6 @@
 <script setup>
 import { defineEmits, ref, computed } from 'vue';
+import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 import { createProfile, loginProfile } from '@/api/profile';
 import MessageDialog from './MessageDialog.vue';
@@ -7,6 +8,7 @@ import { testEmail } from '@/utils/regex';
 
 const emit = defineEmits(['loggedIn']);
 const store = useStore();
+const router = useRouter();
 
 const username = ref('');
 const password = ref('');
@@ -18,6 +20,11 @@ const message = ref({ title: '', message: '', isOpen: false });
 const login = async (e) => {
     e.preventDefault();
     message.value.isOpen = false;
+
+    if (!username.value || !password.value) {
+        message.value = { title: 'Error!', message: 'Please fill all the fields.', isOpen: true };
+        return;
+    }
 
     const res = await loginProfile(username.value, password.value);
     if (!res.data) {
@@ -103,7 +110,12 @@ const passwordFieldType = computed(() => {
 const handleClickViewPasswordBtn = (e) => {
     e.preventDefault();
     isPasswordVisible.value = !isPasswordVisible.value;
-}
+};
+
+const forgetPassword = (e) => {
+    e.preventDefault();
+    router.push({ name: 'password-forget' });
+};
 </script>
 
 <template>
@@ -114,7 +126,7 @@ const handleClickViewPasswordBtn = (e) => {
 
             <form class="mt-4 flex flex-col gap-4">
                 <div class="flex flex-col gap-2">
-                    <label for="username" class="text-xs font-semibold">Username</label>
+                    <label for="username" class="text-xs font-semibold">* Username</label>
                     <input
                         v-model="username"
                         type="text"
@@ -124,7 +136,7 @@ const handleClickViewPasswordBtn = (e) => {
                     />
                 </div>
                 <div v-if="isRegister" class="flex flex-col gap-2">
-                    <label for="email" class="text-xs font-semibold">Email</label>
+                    <label for="email" class="text-xs font-semibold">* Email</label>
                     <input
                         v-model="email"
                         type="email"
@@ -134,7 +146,7 @@ const handleClickViewPasswordBtn = (e) => {
                     />
                 </div>
                 <div class="flex flex-col gap-2">
-                    <label for="password" class="text-xs font-semibold">Password</label>
+                    <label for="password" class="text-xs font-semibold">* Password</label>
                     <div class="flex items-center border rounded-lg">
                         <input
                             v-model="password"
@@ -143,13 +155,28 @@ const handleClickViewPasswordBtn = (e) => {
                             name="password"
                             class="flex-grow border-0 px-3 py-2 rounded-l-lg"
                         />
-                        <button 
-                            class="px-2 bg-transparent text-xs leading-none" 
-                            @click="handleClickViewPasswordBtn">
-                            {{ isPasswordVisible ? 'Hide' : 'View' }}
+                        <button
+                            class="px-2 bg-transparent text-xs leading-none"
+                            @click="handleClickViewPasswordBtn"
+                        >
+                            <img
+                                :src="
+                                    isPasswordVisible
+                                        ? '/icons/opened-eye.svg'
+                                        : '/icons/closed-eye.svg'
+                                "
+                                alt="View password"
+                                class="w-5 h-5"
+                            />
                         </button>
                     </div>
                 </div>
+                <button
+                    class="border-b w-max self-end text-xs text-gray-500"
+                    @click="forgetPassword"
+                >
+                    Forgot password? Reset here.
+                </button>
                 <button
                     class="bg-rose-800 text-white mt-8 px-4 py-2 rounded hover:bg-rose-900"
                     @click="handleClickPrimaryBtn"
