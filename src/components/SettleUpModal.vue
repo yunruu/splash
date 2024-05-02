@@ -1,17 +1,19 @@
 <template>
     <CustomModal title="Settle up" @close="closeModal">
-        <div class="flex flex-col gap-2">
-            <div class="flex gap-2 items-center mb-2">
+        <div class="flex flex-col gap-4">
+            <div class="flex gap-2 items-center">
                 <img
-                    src="../assets/icons/piggy-bank.svg"
+                    src="../assets/icons/book.svg"
                     alt="Settle expenses"
-                    class="w-5 h-5 piggy-icon"
+                    class="w-5 h-5 inline-block"
                 />
-                <span class="font-semibold">You owe</span>
+                <span class="font-semibold">Full settlement</span>
             </div>
-            <ul class="ml-4 overflow-x-auto">
-                <li v-for="debt in ownDebts" :key="debt.id" class="flex gap-2">
-                    <span>{{ debt.to }}:</span>
+            <ul class="ml-4 overflow-x-auto flex flex-col gap-2">
+                <li v-for="debt in props.data" :key="debt.id" class="flex gap-2">
+                    <span>{{ debt.from }}</span>
+                    <span class="text-slate-400">owes</span>
+                    <span>{{ debt.to }}</span>
                     <div class="flex items-center gap-1">
                         <span class="text-xs font-semibold text-slate-500"
                             >{{ debt.currency }}
@@ -20,19 +22,18 @@
                     </div>
                 </li>
             </ul>
-            <div class="flex gap-2 items-center mt-4 mb-2">
+
+            <div class="flex gap-2 items-center mt-4">
                 <img
-                    src="../assets/icons/book.svg"
+                    src="../assets/icons/piggy-bank.svg"
                     alt="Settle expenses"
-                    class="w-5 h-5 inline-block"
+                    class="w-5 h-5 piggy-icon"
                 />
-                <span class="font-semibold">Full settlement</span>
+                <span class="font-semibold">You owe</span>
             </div>
-            <ul class="ml-4 overflow-x-auto">
-                <li v-for="debt in props.data" :key="debt.id" class="flex gap-2">
-                    <span>{{ debt.from }}</span>
-                    <span class="text-slate-400">owes</span>
-                    <span>{{ debt.to }}</span>
+            <ul class="ml-4 overflow-x-auto flex flex-col gap-2">
+                <li v-for="debt in ownDebts" :key="debt.id" class="flex gap-2">
+                    <span>{{ debt.to }}:</span>
                     <div class="flex items-center gap-1">
                         <span class="text-xs font-semibold text-slate-500"
                             >{{ debt.currency }}
