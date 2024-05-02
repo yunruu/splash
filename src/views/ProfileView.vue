@@ -44,7 +44,7 @@ const logout = () => {
 
     <div v-else class="profile">
         <h1 class="text-2xl font-bold py-3 border-b mb-12">
-            Welcome back, {{ profileData?.name }}
+            Welcome back, {{ profileData?.username }}
         </h1>
 
         <form class="flex flex-col gap-6">
