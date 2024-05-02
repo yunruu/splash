@@ -2,7 +2,8 @@
 import { defineEmits, ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
-import { createProfile, loginProfile } from '@/api/profile';
+import { createProfile } from '@/api/profile';
+import { login } from '@/api/auth';
 import MessageDialog from './MessageDialog.vue';
 import { testEmail } from '@/utils/regex';
 
@@ -17,7 +18,7 @@ const isRegister = ref(false);
 const isPasswordVisible = ref(false);
 const message = ref({ title: '', message: '', isOpen: false });
 
-const login = async (e) => {
+const handleLogin = async (e) => {
     e.preventDefault();
     message.value.isOpen = false;
 
@@ -26,7 +27,7 @@ const login = async (e) => {
         return;
     }
 
-    const res = await loginProfile(username.value, password.value);
+    const res = await login(username.value, password.value);
     if (!res.data) {
         message.value = { title: 'Error!', message: res.error, isOpen: true };
         return;
@@ -90,7 +91,7 @@ const handleClickPrimaryBtn = (e) => {
     if (isRegister.value) {
         register(e);
     } else {
-        login(e);
+        handleLogin(e);
     }
 };
 

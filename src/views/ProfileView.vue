@@ -30,11 +30,11 @@ const populateData = async (username) => {
 };
 
 onMounted(async () => {
-    const user = store.state.username;
+    const user = store.getters.getUsername;
     if (!user) {
         isLoginModalOpen.value = true;
     } else {
-        profileData.value = await populateData(user.username);
+        profileData.value = await populateData(user);
     }
 });
 
@@ -44,7 +44,18 @@ const onLogin = async (username) => {
 };
 
 const logout = () => {
-    store.commit('login', null);
+    store.commit('logout');
+    dialog.value = {
+        isOpen: true,
+        title: 'Logged out',
+        message: 'You have been logged out successfully.',
+        icon: '/icons/green-tick.svg',
+        showOverlay: true,
+        isCancel: false,
+        confirm: () => {
+            dialog.value.isOpen = false;
+        }
+    };
     isLoginModalOpen.value = true;
 };
 
@@ -62,7 +73,7 @@ const handleDeleteAccount = (e) => {
 
 const confirmDeleteAccount = async () => {
     dialog.value.isOpen = false;
-    const res = await deleteAccount(store.state.username.username);
+    const res = await deleteAccount(store.getters.getUsername);
     if (!res.data) {
         dialog.value = {
             isOpen: true,

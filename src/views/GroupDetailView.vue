@@ -100,7 +100,7 @@ const settleUpController = ref({ isOpen: false, data: {} });
 const isLoading = ref(false);
 
 onBeforeMount(() => {
-    if (!store.state.username) {
+    if (!store.getters.getUsername) {
         router.push('/profile');
     }
 });

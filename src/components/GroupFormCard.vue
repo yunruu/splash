@@ -77,7 +77,7 @@ const props = defineProps(['groupData']);
 const emit = defineEmits(['closeModal']);
 
 const store = useStore();
-const currUsername = store.state.username.username;
+const currUsername = store.getters.getUsername;
 const members = ref();
 const groupName = ref('');
 const groupDescription = ref('');
