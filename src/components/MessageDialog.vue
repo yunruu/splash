@@ -1,5 +1,5 @@
 <template>
-    <div v-if="props.showOverlay" class="z-[9998] fixed top-0 left-0 right-0 h-full wrapper"></div>
+    <div class="z-[9998] fixed top-0 left-0 right-0 h-full wrapper"></div>
     <div class="z-[9999] fixed top-8 left-0 right-0 m-5 bg-white p-4 rounded-lg shadow-md">
         <div class="text-lg font-bold mb-4 border-b pb-3 flex items-center gap-3">
             <img
@@ -34,7 +34,7 @@
 <script setup>
 import { defineEmits, defineProps } from 'vue';
 
-const props = defineProps(['title', 'message', 'isCancel', 'icon', 'showOverlay']);
+const props = defineProps(['title', 'message', 'isCancel', 'icon']);
 const emit = defineEmits(['confirm', 'cancel']);
 
 const confirm = () => {

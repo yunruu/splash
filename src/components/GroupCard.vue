@@ -40,7 +40,6 @@
         :title="message.title"
         :message="message.message"
         :is-cancel="true"
-        :show-overlay="message.showOverlay"
         @cancel="message.isOpen = false"
         @confirm="handleDeleteGroup"
     />
@@ -65,7 +64,6 @@ const onClickDeleteGroup = (e) => {
     message.value = {
         title: 'Delete group',
         message: 'Are you sure you want to delete this group?',
-        showOverlay: true,
         isOpen: true
     };
 };
@@ -79,7 +77,6 @@ const handleDeleteGroup = async () => {
         message.value = {
             title: 'Error',
             message: 'Failed to delete group',
-            showOverlay: true,
             isOpen: true
         };
     }

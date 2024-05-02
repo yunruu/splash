@@ -68,7 +68,7 @@ const register = async (e) => {
     try {
         const res = await createProfile(username.value, data);
         if (!res.data) {
-            throw new Error('Failed to create profile, please try again later. ', res.error);
+            throw new Error(res.error);
         }
         backToLogin();
     } catch (error) {

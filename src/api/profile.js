@@ -1,5 +1,14 @@
 import { db } from '../plugins/firebase';
-import { Timestamp, collection, doc, getDoc, getDocs, setDoc } from 'firebase/firestore';
+import {
+    Timestamp,
+    collection,
+    doc,
+    getDoc,
+    getDocs,
+    setDoc,
+    query,
+    where
+} from 'firebase/firestore';
 import { getGroupData } from './group';
 import { hashPassword } from '@/utils/encrypt';
 
@@ -10,6 +19,14 @@ export const createProfile = async (username, profileData) => {
         // Check for existing username
         if (docSnap.exists()) {
             throw new Error('Username already exists');
+        }
+
+        const email = profileData.email;
+        // Check for existing email
+        const emailQuery = query(collection(db, 'profile'), where('email', '==', email));
+        const emailQuerySnapshot = await getDocs(emailQuery);
+        if (!emailQuerySnapshot.empty) {
+            throw new Error('Email already exists');
         }
 
         profileData.password = await hashPassword(profileData.password);

@@ -29,7 +29,6 @@
         :message="message.message"
         :is-cancel="false"
         :icon="message.icon"
-        :showOverlay="message.showOverlay"
         @confirm="message.isOpen = false"
     />
 </template>
@@ -49,7 +48,7 @@ const store = useStore();
 const groupsData = ref([]);
 const isCreateModalOpen = ref(false);
 const updateGroupModal = ref({ isOpen: false, groupId: '', data: {} });
-const message = ref({ title: '', message: '', isOpen: false, showOverlay: false });
+const message = ref({ title: '', message: '', isOpen: false });
 
 const onClickCreateGroup = () => {
     isCreateModalOpen.value = true;
@@ -64,8 +63,7 @@ const closeGroupModal = (isSuccess, msg) => {
             title: 'Success',
             message: msg,
             isOpen: true,
-            icon: '/icons/green-tick.svg',
-            showOverlay: true
+            icon: '/icons/green-tick.svg'
         };
     }
 };
@@ -96,8 +94,7 @@ const handleDeleteGroup = () => {
         title: 'Success',
         message: 'Group deleted successfully',
         isOpen: true,
-        icon: '/icons/green-tick.svg',
-        showOverlay: true
+        icon: '/icons/green-tick.svg'
     };
 };
 
