@@ -14,7 +14,6 @@ const dialog = ref({
     title: '',
     message: '',
     isCancel: false,
-    showOverlay: false,
     icon: '',
     confirm: () => {}
 });
@@ -50,7 +49,6 @@ const logout = () => {
         title: 'Logged out',
         message: 'You have been logged out successfully.',
         icon: '/icons/green-tick.svg',
-        showOverlay: true,
         isCancel: false,
         confirm: () => {
             dialog.value.isOpen = false;
@@ -65,7 +63,6 @@ const handleDeleteAccount = (e) => {
         isOpen: true,
         title: 'Delete Account',
         message: 'Are you sure you want to delete your account?',
-        showOverlay: true,
         isCancel: true,
         confirm: confirmDeleteAccount
     };
@@ -80,7 +77,6 @@ const confirmDeleteAccount = async () => {
             title: 'Error',
             message:
                 'An error occurred while deleting your account: ' + (res.error || 'Unknown error'),
-            showOverlay: true,
             isCancel: false,
             confirm: () => {
                 dialog.value.isOpen = false;
@@ -94,7 +90,6 @@ const confirmDeleteAccount = async () => {
         title: 'Account Deleted',
         message: 'Your account has been deleted successfully.',
         icon: '/icons/green-tick.svg',
-        showOverlay: true,
         isCancel: false,
         confirm: () => {
             dialog.value.isOpen = false;
@@ -150,7 +145,6 @@ const confirmDeleteAccount = async () => {
     <MessageDialog
         v-if="dialog.isOpen"
         :message="dialog.message"
-        :show-overlay="dialog.showOverlay"
         :title="dialog.title"
         :is-cancel="dialog.isCancel"
         :icon="dialog.icon"
