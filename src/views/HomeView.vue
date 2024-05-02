@@ -7,7 +7,7 @@ const router = useRouter();
 const store = useStore();
 
 onBeforeMount(() => {
-    if (!store.state.username) {
+    if (!store.getters.getUsername) {
         router.push('/profile');
     }
 });

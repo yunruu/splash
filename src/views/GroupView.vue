@@ -72,7 +72,7 @@ const closeGroupModal = (isSuccess, msg) => {
 
 const fetchGroups = async () => {
     try {
-        groupsData.value = await getGroups(store.state.username.username, false);
+        groupsData.value = await getGroups(store.getters.getUsername, false);
     } catch (error) {
         console.error(error);
     }
@@ -102,7 +102,8 @@ const handleDeleteGroup = () => {
 };
 
 onBeforeMount(() => {
-    if (!store.state.username) {
+    const user = store.getters.getUsername;
+    if (!user) {
         router.push('/profile');
     }
 });

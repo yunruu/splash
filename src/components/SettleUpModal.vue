@@ -60,7 +60,7 @@ const isOwnDebtPopulated = ref(false);
 const ownDebts = ref([]);
 
 onMounted(() => {
-    username.value = store.state.username.username;
+    username.value = store.getters.getUsername;
 });
 
 watch(
