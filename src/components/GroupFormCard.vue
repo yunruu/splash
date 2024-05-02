@@ -159,7 +159,7 @@ const handleClickPrimaryBtn = async (e) => {
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 100;
+    z-index: var(--modal-z-index);
 }
 .modal {
     min-height: 70%;

@@ -56,7 +56,7 @@ nav {
     right: 0;
     display: flex;
     justify-content: space-around;
-    z-index: 150;
+    z-index: var(--nav-z-index);
     background-color: white;
 
     a {

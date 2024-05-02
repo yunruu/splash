@@ -144,7 +144,6 @@ const splitBy = ref([]);
 const isError = ref(false);
 const errMsg = ref('');
 const isMessageDialog = ref(false);
-
 const currencyOptions = ref(currencies);
 
 onMounted(async () => {
@@ -268,10 +267,12 @@ const onDeleteExpense = async () => {
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 100;
+    z-index: var(--modal-z-index);
 }
 .modal {
     min-height: 70%;
+    max-height: calc(90vh - var(--nav-height));
+    overflow-y: auto;
     width: 90%;
     max-width: 700px;
     display: flex;

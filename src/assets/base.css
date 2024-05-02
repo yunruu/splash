@@ -48,6 +48,8 @@
     --section-gap: 160px;
 
     --nav-height: 4.5rem;
+    --nav-z-index: 150;
+    --modal-z-index: 151;
 }
 
 @media (prefers-color-scheme: dark) {

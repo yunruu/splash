@@ -6,6 +6,17 @@
         class="w-8 fixed top-8 -ml-1 z-[100] hover:cursor-pointer rounded hover:border hover:border-rose-300 active:border-2"
         @click="routeToGroups"
     />
+    <button
+        class="flex items-center gap-2 border border-slate-200 fixed top-8 right-8 z-[100] px-4 py-2 text-slate-200 text font-semibold rounded-full active:border-2 active:border-rose-400 hover:cursor-pointer hover:bg-rose-800 hover:border-rose-800"
+        @click="handleSettleUp"
+    >
+        <img
+            src="../assets/icons/piggy-bank.svg"
+            alt="Settle expenses"
+            class="w-5 h-5 inline-block"
+        />
+        Settle
+    </button>
     <div class="flex flex-col w-full">
         <div class="header flex flex-col gap-2">
             <span class="capitalize text-2xl font-bold">{{ groupData.name }}</span>
@@ -33,10 +44,11 @@
             </div>
         </div>
         <button
-            class="bg-rose-800 px-4 py-2 text-white text font-semibold rounded-full fixed bottom-20 right-8 active:border-2 active:border-rose-400 hover:cursor-pointer hover:bg-rose-900"
+            class="flex items-center gap-2 bg-rose-800 px-4 py-2 text-white text font-semibold rounded-full fixed bottom-20 right-8 active:border-2 active:border-rose-400 hover:cursor-pointer hover:bg-rose-900"
             @click="openExpenseModal(false)"
         >
-            + New expense
+            <img src="../assets/icons/plus.svg" alt="Add expense" class="w-5 h-5 inline-block" />
+            Expense
         </button>
         <ExpenseFormCard
             v-if="isExpenseModalOpen"
@@ -46,16 +58,24 @@
             @close-modal="closeExpenseModal"
         />
     </div>
+    <SettleUpModal
+        v-if="settleUpController.isOpen"
+        :data="settleUpController.data"
+        @close="settleUpController.isOpen = false"
+    />
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onBeforeMount, onMounted } from 'vue';
 import { getGroupData } from '../api/group';
 import { useRoute, useRouter } from 'vue-router';
-import { getAllExpensesOfGroup } from '@/api/expense';
+import { useStore } from 'vuex';
+import { getAllExpensesOfGroup, settleUp } from '@/api/expense';
 import ExpenseFormCard from '../components/ExpenseFormCard.vue';
 import ExpenseCard from '../components/ExpenseCard.vue';
+import SettleUpModal from '../components/SettleUpModal.vue';
 
+const store = useStore();
 const route = useRoute();
 const router = useRouter();
 const groupId = route.params.id;
@@ -64,6 +84,13 @@ const isExpenseModalOpen = ref(false);
 const isUpdateExpense = ref(false);
 const expenseToUpdate = ref({});
 const expenses = ref([]);
+const settleUpController = ref({ isOpen: false, data: {} });
+
+onBeforeMount(() => {
+    if (!store.state.username) {
+        router.push('/profile');
+    }
+});
 
 onMounted(async () => {
     try {
@@ -104,6 +131,21 @@ const fetchExpenses = async () => {
 const updateExpense = (expense) => {
     expenseToUpdate.value = expense;
     openExpenseModal(true);
+};
+
+const handleSettleUp = async (e) => {
+    e.preventDefault();
+    settleUpController.value.isOpen = true;
+    try {
+        const res = await settleUp(groupId);
+        if (!res.data) {
+            throw new Error('Error settling up: ' + res.error);
+        }
+        settleUpController.value.data = res.data;
+    } catch (error) {
+        console.error(error);
+        settleUpController.value.isOpen = false;
+    }
 };
 </script>
 
