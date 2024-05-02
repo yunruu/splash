@@ -101,7 +101,8 @@ const settleDebts = (debts) => {
             if (!netBalances[currency]) {
                 netBalances[currency] = {};
             }
-            netBalances[currency][user] = (netBalances[currency][user] || 0) + debts[user][currency];
+            netBalances[currency][user] =
+                (netBalances[currency][user] || 0) + debts[user][currency];
         }
     }
 
@@ -109,8 +110,8 @@ const settleDebts = (debts) => {
     const payments = [];
     for (const currency in netBalances) {
         const balances = netBalances[currency];
-        const payers = Object.keys(balances).filter(user => balances[user] > 0);
-        const receivers = Object.keys(balances).filter(user => balances[user] < 0);
+        const payers = Object.keys(balances).filter((user) => balances[user] > 0);
+        const receivers = Object.keys(balances).filter((user) => balances[user] < 0);
 
         while (payers.length > 0 && receivers.length > 0) {
             const payer = payers[0];
@@ -138,7 +139,7 @@ const settleDebts = (debts) => {
         }
     }
     return payments;
-}
+};
 
 export const settleUp = async (groupId) => {
     try {
@@ -149,7 +150,7 @@ export const settleUp = async (groupId) => {
 
         // Initialise the owe array with members and initial value 0.0
         let debts = {};
-        groupInfo.data().profiles.forEach(key=> {
+        groupInfo.data().profiles.forEach((key) => {
             debts[key] = currencies.reduce((obj, item) => {
                 obj[item.value] = 0.0;
                 return obj;
@@ -162,21 +163,20 @@ export const settleUp = async (groupId) => {
             throw new Error('No expenses found');
         }
 
-        // For each expense, we populate who owes what 
-        res.data.forEach(obj => {
+        // For each expense, we populate who owes what
+        res.data.forEach((obj) => {
             const totalPrice = obj.amount;
             const splitPrice = totalPrice / obj.splitBy.length;
 
             debts[obj.paidBy][obj.currency] += -1 * totalPrice;
-            obj.splitBy.forEach(user => {
+            obj.splitBy.forEach((user) => {
                 debts[user][obj.currency] += splitPrice;
-            })
+            });
         });
 
         return settleDebts(debts);
-
     } catch (error) {
         console.error(error);
         return { error: error.message };
     }
-}
+};
