@@ -7,7 +7,7 @@
         @click="routeToGroups"
     />
     <button
-        class="flex items-center gap-2 border border-slate-200 fixed top-8 right-8 z-[100] px-4 py-2 text-slate-200 text font-semibold rounded-full active:border-2 active:border-rose-400 hover:cursor-pointer hover:bg-rose-800 hover:border-rose-800"
+        class="flex items-center gap-2 border border-slate-200 fixed top-8 right-16 z-[100] px-4 py-2 text-slate-200 text font-semibold rounded-full active:border-2 active:border-rose-400 hover:cursor-pointer hover:bg-rose-800 hover:border-rose-800"
         @click="handleSettleUp"
     >
         <img
@@ -16,6 +16,16 @@
             class="w-5 h-5 inline-block"
         />
         Settle
+    </button>
+    <button
+        class="flex items-center fixed top-8 right-4 z-[100] px-2 py-2 text-slate-200 text font-semibold rounded-full active:border-2 active:border-rose-400 hover:cursor-pointer hover:bg-rose-800 hover:border-rose-800"
+        @click="fetchExpenses"
+    >
+        <img
+            src="../assets/icons/refresh.svg"
+            alt="Refresh expenses"
+            class="w-5 h-5 inline-block"
+        />
     </button>
     <div class="flex flex-col w-full">
         <div class="header flex flex-col gap-2">
@@ -63,6 +73,7 @@
         :data="settleUpController.data"
         @close="settleUpController.isOpen = false"
     />
+    <CustomLoadingModal v-if="isLoading" />
 </template>
 
 <script setup>
@@ -74,6 +85,7 @@ import { getAllExpensesOfGroup, settleUp } from '@/api/expense';
 import ExpenseFormCard from '../components/ExpenseFormCard.vue';
 import ExpenseCard from '../components/ExpenseCard.vue';
 import SettleUpModal from '../components/SettleUpModal.vue';
+import CustomLoadingModal from '../components/CustomLoadingModal.vue';
 
 const store = useStore();
 const route = useRoute();
@@ -85,6 +97,7 @@ const isUpdateExpense = ref(false);
 const expenseToUpdate = ref({});
 const expenses = ref([]);
 const settleUpController = ref({ isOpen: false, data: {} });
+const isLoading = ref(false);
 
 onBeforeMount(() => {
     if (!store.state.username) {
@@ -116,6 +129,7 @@ const closeExpenseModal = () => {
 };
 
 const fetchExpenses = async () => {
+    isLoading.value = true;
     try {
         const res = await getAllExpensesOfGroup(groupId);
         if (!res.data) {
@@ -125,6 +139,8 @@ const fetchExpenses = async () => {
     } catch (error) {
         console.error(error);
         return { error: error.message };
+    } finally {
+        isLoading.value = false;
     }
 };
 
