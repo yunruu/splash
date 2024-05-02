@@ -174,7 +174,7 @@ export const settleUp = async (groupId) => {
             });
         });
 
-        return settleDebts(debts);
+        return { data: settleDebts(debts) };
     } catch (error) {
         console.error(error);
         return { error: error.message };
