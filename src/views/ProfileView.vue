@@ -2,12 +2,22 @@
 import { getProfile } from '../api/profile';
 import { ref, onMounted } from 'vue';
 import { useStore } from 'vuex';
-
+import { deleteAccount } from '../api/auth';
 import LoginFormCard from '../components/LoginFormCard.vue';
+import MessageDialog from '@/components/MessageDialog.vue';
 
 const store = useStore();
 const profileData = ref({});
 const isLoginModalOpen = ref(false);
+const dialog = ref({
+    isOpen: false,
+    title: '',
+    message: '',
+    isCancel: false,
+    showOverlay: false,
+    icon: '',
+    confirm: () => {}
+});
 
 const populateData = async (username) => {
     try {
@@ -36,6 +46,50 @@ const onLogin = async (username) => {
 const logout = () => {
     store.commit('login', null);
     isLoginModalOpen.value = true;
+};
+
+const handleDeleteAccount = (e) => {
+    e.preventDefault();
+    dialog.value = {
+        isOpen: true,
+        title: 'Delete Account',
+        message: 'Are you sure you want to delete your account?',
+        showOverlay: true,
+        isCancel: true,
+        confirm: confirmDeleteAccount
+    };
+};
+
+const confirmDeleteAccount = async () => {
+    dialog.value.isOpen = false;
+    const res = await deleteAccount(store.state.username.username);
+    if (!res.data) {
+        dialog.value = {
+            isOpen: true,
+            title: 'Error',
+            message:
+                'An error occurred while deleting your account: ' + (res.error || 'Unknown error'),
+            showOverlay: true,
+            isCancel: false,
+            confirm: () => {
+                dialog.value.isOpen = false;
+            }
+        };
+        return;
+    }
+    store.commit('login', null);
+    dialog.value = {
+        isOpen: true,
+        title: 'Account Deleted',
+        message: 'Your account has been deleted successfully.',
+        icon: '/icons/green-tick.svg',
+        showOverlay: true,
+        isCancel: false,
+        confirm: () => {
+            dialog.value.isOpen = false;
+            isLoginModalOpen.value = true;
+        }
+    };
 };
 </script>
 
@@ -74,6 +128,22 @@ const logout = () => {
             >
                 Logout
             </button>
+            <button
+                class="border border-rose-800 px-4 py-2 text-rose-800 text font-semibold rounded-full"
+                @click="handleDeleteAccount"
+            >
+                Delete account
+            </button>
         </form>
     </div>
+    <MessageDialog
+        v-if="dialog.isOpen"
+        :message="dialog.message"
+        :show-overlay="dialog.showOverlay"
+        :title="dialog.title"
+        :is-cancel="dialog.isCancel"
+        :icon="dialog.icon"
+        @confirm="dialog.confirm"
+        @cancel="dialog.isOpen = false"
+    />
 </template>
