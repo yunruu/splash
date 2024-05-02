@@ -33,6 +33,11 @@ const router = createRouter({
             component: () => import('../views/GroupDetailView.vue')
         },
         {
+            path: '/password-forget',
+            name: 'password-forget',
+            component: () => import('../views/ForgetPasswordView.vue')
+        },
+        {
             path: '/:catchAll(.*)',
             name: 'not-found',
             component: () => import('../views/404NotFound.vue')
