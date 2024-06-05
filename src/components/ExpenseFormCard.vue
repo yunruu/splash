@@ -50,7 +50,7 @@
                             v-model="amount"
                             type="number"
                             placeholder="Amount"
-                            class="border rounded px-2 flex-grow"
+                            class="border rounded px-2 flex-grow w-full"
                             min="0"
                         />
                     </div>
@@ -138,7 +138,7 @@ const members = ref();
 const expenseName = ref('');
 const expenseDescription = ref('');
 const amount = ref(0);
-const currency = ref('SGD');
+const currency = ref('EUR');
 const paidBy = ref('');
 const splitBy = ref([]);
 const isError = ref(false);
