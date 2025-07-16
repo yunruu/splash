@@ -5,7 +5,7 @@ import { useStore } from 'vuex';
 import { createProfile } from '@/api/profile';
 import { login } from '@/api/auth';
 import MessageDialog from './MessageDialog.vue';
-import { testEmail } from '@/utils/regex';
+// import { testEmail } from '@/utils/regex';
 
 const emit = defineEmits(['loggedIn']);
 const store = useStore();
@@ -40,24 +40,58 @@ const register = async (e) => {
     e.preventDefault();
     message.value.isOpen = false;
 
-    if (!username.value || !password.value || !email.value) {
+    if (!username.value || !password.value) {
         message.value = { title: 'Error!', message: 'Please fill all the fields.', isOpen: true };
         return;
     }
 
-    if (password.value.length < 6) {
+    if (username.value.length <= 4) {
         message.value = {
             title: 'Error!',
-            message: 'Password must be at least 6 characters.',
+            message: 'Username must have at least 5 characters.',
             isOpen: true
         };
         return;
     }
 
-    if (!testEmail(email.value)) {
-        message.value = { title: 'Error!', message: 'Invalid email address.', isOpen: true };
+    if (password.value.length < 8) {
+        message.value = {
+            title: 'Error!',
+            message: 'Password must be at least 8 characters.',
+            isOpen: true
+        };
         return;
     }
+
+    if (!/[A-Z]/.test(password.value)) {
+        message.value = {
+            title: 'Error!',
+            message: 'Password must contain at least one uppercase letter.',
+            isOpen: true
+        };
+    }
+
+    if (!/[a-z]/.test(password.value)) {
+        message.value = {
+            title: 'Error!',
+            message: 'Password must contain at least one lowercase letter.',
+            isOpen: true
+        };
+    }
+
+    // Rule 4: Contains at least one number
+    if (!/[0-9]/.test(password.value)) {
+        message.value = {
+            title: 'Error!',
+            message: 'Password must contain at least one number.',
+            isOpen: true
+        };
+    }
+
+    // if (!testEmail(email.value)) {
+    //     message.value = { title: 'Error!', message: 'Invalid email address.', isOpen: true };
+    //     return;
+    // }
 
     const data = {
         username: username.value,
@@ -134,20 +168,11 @@ const forgetPassword = (e) => {
                         id="username"
                         name="username"
                         class="border rounded-lg px-3 py-2"
-                    />
-                </div>
-                <div v-if="isRegister" class="flex flex-col gap-2">
-                    <label for="email" class="text-xs font-semibold">* Email</label>
-                    <input
-                        v-model="email"
-                        type="email"
-                        id="email"
-                        name="email"
-                        class="border rounded-lg px-3 py-2"
+                        @keydown.enter="handleClickPrimaryBtn"
                     />
                 </div>
                 <div class="flex flex-col gap-2">
-                    <label for="password" class="text-xs font-semibold">* Password</label>
+                    <label for="password" class="text-xs font-semibold">* Password </label>
                     <div class="flex items-center border rounded-lg">
                         <input
                             v-model="password"
@@ -155,6 +180,7 @@ const forgetPassword = (e) => {
                             id="password"
                             name="password"
                             class="flex-grow border-0 px-3 py-2 rounded-l-lg"
+                            @keydown.enter="handleClickPrimaryBtn"
                         />
                         <button
                             class="px-2 bg-transparent text-xs leading-none"
