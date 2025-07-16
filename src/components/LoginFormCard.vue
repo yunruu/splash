@@ -69,6 +69,7 @@ const register = async (e) => {
             message: 'Password must contain at least one uppercase letter.',
             isOpen: true
         };
+        return;
     }
 
     if (!/[a-z]/.test(password.value)) {
@@ -77,6 +78,7 @@ const register = async (e) => {
             message: 'Password must contain at least one lowercase letter.',
             isOpen: true
         };
+        return;
     }
 
     // Rule 4: Contains at least one number
@@ -86,6 +88,7 @@ const register = async (e) => {
             message: 'Password must contain at least one number.',
             isOpen: true
         };
+        return;
     }
 
     // if (!testEmail(email.value)) {
@@ -104,6 +107,7 @@ const register = async (e) => {
         if (!res.data) {
             throw new Error(res.error);
         }
+        message.value = { title: 'Success', message: 'Account created successfully', isOpen: true };
         backToLogin();
     } catch (error) {
         message.value = { title: 'Error!', message: error.message, isOpen: true };
