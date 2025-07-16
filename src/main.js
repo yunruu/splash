@@ -6,7 +6,7 @@ import { createStore } from 'vuex';
 import App from './App.vue';
 import router from './router';
 import { VueFire, VueFireAuth } from 'vuefire';
-import { firebaseApp } from './plugins/firebase';
+import { firebaseApp } from './plugins/firebase.client';
 import { getUserFromStorage, removeUserFromStorage, saveUserToStorage } from './utils/storage';
 
 const store = createStore({

@@ -11,7 +11,7 @@ import {
     updateDoc,
     where
 } from 'firebase/firestore';
-import { db } from '../plugins/firebase';
+import { db } from '../plugins/firebase.client';
 import { currencies } from '@/utils/currency';
 
 export const createExpense = async ({

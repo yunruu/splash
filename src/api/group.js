@@ -8,7 +8,7 @@ import {
     doc,
     updateDoc
 } from 'firebase/firestore';
-import { db } from '../plugins/firebase';
+import { db } from '../plugins/firebase.client';
 
 // Create a new group with a name, description, and list of profiles added to the group
 export const createGroup = async ({ name, description, profiles }) => {
