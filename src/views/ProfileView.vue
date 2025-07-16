@@ -118,7 +118,7 @@ const confirmDeleteAccount = async () => {
                     disabled
                 />
             </div>
-            <div class="flex flex-col gap-2">
+            <!-- <div class="flex flex-col gap-2">
                 <label for="email" class="text-xs font-semibold">Email</label>
                 <input
                     id="email"
@@ -127,7 +127,7 @@ const confirmDeleteAccount = async () => {
                     class="border rounded-lg px-3 py-2"
                     disabled
                 />
-            </div>
+            </div> -->
             <button
                 class="bg-rose-800 px-4 py-2 mt-5 text-white text font-semibold rounded-full"
                 @click="logout"

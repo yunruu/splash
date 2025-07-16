@@ -1,13 +1,5 @@
 import { db, firebaseApp } from '../plugins/firebase.client';
-import {
-    doc,
-    deleteDoc,
-    getDoc,
-    getDocs,
-    collection,
-    setDoc,
-    getFirestore
-} from 'firebase/firestore';
+import { doc, deleteDoc, getDoc, setDoc, getFirestore } from 'firebase/firestore';
 import { hashPassword, isPasswordMatch } from '@/utils/encrypt';
 
 export const resetPassword = async (username, password) => {
@@ -42,9 +34,6 @@ export const deleteAccount = async (username) => {
 export const login = async (username, password) => {
     try {
         const db = getFirestore(firebaseApp);
-        const docs = await getDocs(collection(db, 'profile'));
-        docs.forEach((item) => console.log(item));
-
         const docRef = doc(db, 'profile', username);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
@@ -55,7 +44,6 @@ export const login = async (username, password) => {
         }
         throw new Error('Invalid username or password');
     } catch (e) {
-        console.log('ERR', e.message);
         return { error: e };
     }
 };
