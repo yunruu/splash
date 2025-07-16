@@ -124,7 +124,7 @@
 </template>
 
 <script setup>
-import { ref, defineEmits, defineProps, onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 import { getMembers } from '@/api/profile';
 import { createExpense, deleteExpense, updateExpense } from '@/api/expense';
 import { currencies } from '@/utils/currency';

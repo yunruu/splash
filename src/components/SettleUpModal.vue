@@ -48,7 +48,7 @@
 </template>
 
 <script setup>
-import { ref, defineEmits, defineProps, onMounted, watch } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { useStore } from 'vuex';
 import CustomModal from './CustomModal.vue';
 

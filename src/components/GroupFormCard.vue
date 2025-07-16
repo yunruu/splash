@@ -67,7 +67,7 @@
 </template>
 
 <script setup>
-import { ref, defineEmits, defineProps, onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 import { getAllProfiles } from '@/api/profile';
 import { createGroup, updateGroup } from '@/api/group';
 import { useStore } from 'vuex';

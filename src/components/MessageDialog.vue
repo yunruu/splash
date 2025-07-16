@@ -32,8 +32,6 @@
 </template>
 
 <script setup>
-import { defineEmits, defineProps } from 'vue';
-
 const props = defineProps(['title', 'message', 'isCancel', 'icon']);
 const emit = defineEmits(['confirm', 'cancel']);
 

@@ -24,7 +24,6 @@
 </template>
 
 <script setup>
-import { defineEmits, defineProps } from 'vue';
 import moment from 'moment';
 
 const { expense } = defineProps(['expense']);

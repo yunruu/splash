@@ -1,5 +1,5 @@
 <script setup>
-import { defineEmits, ref, computed } from 'vue';
+import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 import { createProfile } from '@/api/profile';

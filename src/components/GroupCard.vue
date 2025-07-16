@@ -46,7 +46,7 @@
 </template>
 
 <script setup>
-import { defineEmits, defineProps, ref } from 'vue';
+import { ref } from 'vue';
 import MessageDialog from './MessageDialog.vue';
 import { deleteGroup } from '../api/group';
 
